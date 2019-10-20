@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:lean_coffee_timer/data/data_provider.dart';
+import 'package:lean_coffee_timer/data/database.dart';
 import 'package:lean_coffee_timer/pages/tasks_page.dart';
 
 
@@ -9,7 +10,10 @@ import 'package:provider/provider.dart';
 import 'package:lean_coffee_timer/widgets/ButtonNavyBar.dart';
 
 
-void main() => runApp(MyApp());
+void main()
+{ 
+  runApp(MyApp());
+}
 
 
 class MyApp extends StatefulWidget {
@@ -22,6 +26,13 @@ class _MyAppState extends State<MyApp> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+@override
+  void initState() {
+    DatabaseProvider db  = DatabaseProvider.db;
+    db.getAll();
+    super.initState();
   }
 
   @override
@@ -75,9 +86,13 @@ final List<BottomNavyBarItem> naviItems = [
           );
     break;
     case 1:
+      
       return ChangeNotifierProvider<DataProvider>(
-        builder: (_) => DataProvider(),
-        child: TaskPage(),
+        builder: 
+        (context) => DataProvider(),
+        child:  Consumer<DataProvider>(
+          builder: (context, model, child) => TaskPage(),
+        ),
       );
     break; 
     case 2:

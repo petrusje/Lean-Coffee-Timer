@@ -19,7 +19,7 @@ class DatabaseProvider{
     }
 
     _database = await initDb();
-    return _database;
+    return  _database;
   }
 
   initDb() async{

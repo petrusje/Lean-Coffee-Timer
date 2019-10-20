@@ -61,7 +61,7 @@ class TaskWidget extends StatelessWidget {
                         fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    'Duration: ${_formatDuration()}',
+                    'Duração: ${_formatDuration()}',
                     style: TextStyle(color: Colors.black, fontSize: 14.0),
                   ),
                 ],

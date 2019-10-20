@@ -25,7 +25,7 @@ class _TimerPageState extends State<TimerPage>
   /// You will pass the minutes.
   String timeText = '';
   String statusText = '';
-  String buttonText = 'Start';
+  String buttonText = 'Iniciar';
 
   Stopwatch stopwatch = Stopwatch();
   static const delay = Duration(microseconds: 1);
@@ -46,8 +46,8 @@ class _TimerPageState extends State<TimerPage>
         stopwatch.reset();
         _controller.stop(canceled: false);
         setState(() {
-          statusText = 'Finished';
-          buttonText = "Restart";
+          statusText = 'Terminado';
+          buttonText = "Reiniciar";
         });
       return;
     }else {
@@ -68,18 +68,18 @@ class _TimerPageState extends State<TimerPage>
 
     if (stopwatch.isRunning) {
       setState(() {
-        buttonText = "Running";
+        buttonText = "Contando";
       });
     } else if (stopwatch.elapsed.inSeconds == 0) {
       setState(() {
         timeText = '${task.hours.toString().padLeft(2, "0")}:'
             '${task.minutes.toString().padLeft(2, '0')}:'
             '${task.seconds.toString().padLeft(2, '0')}';
-        buttonText = "Start";
+        buttonText = "Iniciar";
       });
     } else {
       setState(() {
-        buttonText = "Paused";
+        buttonText = "Pausado";
       });
     }
   }

@@ -15,10 +15,9 @@ class TaskPage extends StatefulWidget {
 }
 
 class _TaskPageState extends State<TaskPage> {
-  
-@override
+  @override
   void initState() {
-    DataProvider();
+    //DataProvider();
     super.initState();
   }
 
@@ -49,8 +48,8 @@ class _TaskPageState extends State<TaskPage> {
     }
   }
 
-  Widget _buildChild() {
-    List<Task> tasks = Provider.of<DataProvider>(context).getTasks();
+  Widget _buildChild(BuildContext context, AsyncSnapshot snapshot) {
+    List<Task> tasks = snapshot.data;
     if (tasks.isEmpty) {
       return Center(
         child: Column(
@@ -63,38 +62,38 @@ class _TaskPageState extends State<TaskPage> {
           ],
         ),
       );
-    }
-    return ListView.builder(
-      itemCount: tasks.length,
-      padding: const EdgeInsets.only(top: 8),
-      itemBuilder: (BuildContext context, int index) {
-        final Task item = tasks.elementAt(index);
-        return Container(
-          margin: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          child: Dismissible(
-            background: Container(color: Colors.red),
-            direction: DismissDirection.endToStart,
-            key: ObjectKey(item),
-            child: TaskWidget(task: item),
-            onDismissed: (direction) {
-              tasks.remove(item);
-              Provider.of<DataProvider>(context).deleteTask(item);
-              setState(() {});
+    } else
+      return ListView.builder(
+        itemCount: tasks.length,
+        padding: const EdgeInsets.only(top: 8),
+        itemBuilder: (BuildContext context, int index) {
+          final Task item = tasks.elementAt(index);
+          return Container(
+            margin: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: Dismissible(
+              background: Container(color: Colors.red),
+              direction: DismissDirection.endToStart,
+              key: ObjectKey(item),
+              child: TaskWidget(task: item),
+              onDismissed: (direction) {
+                tasks.remove(item);
+                Provider.of<DataProvider>(context).deleteTask(item);
+                setState(() {});
 
-              Scaffold.of(context)
-                  .showSnackBar(SnackBar(content: Text("Timer excluido!")));
-            },
-          ),
-        );
-      },
-    );
+                Scaffold.of(context).showSnackBar(SnackBar(
+                  content: Text("Timer excluido!"),
+                  backgroundColor: Colors.amber[50],
+                ));
+              },
+            ),
+          );
+        },
+      );
   }
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<DataProvider>(
-      builder: (context) => DataProvider(),
-      child: Scaffold(
+    return Scaffold(
         appBar: AppBar(
           centerTitle: false,
           elevation: 0.0,
@@ -112,8 +111,19 @@ class _TaskPageState extends State<TaskPage> {
           backgroundColor: Colors.white,
           onPressed: _openBottomSheet,
         ),
-        body: _buildChild(),
-      ),
-    );
+        body: FutureBuilder(
+            future: Provider.of<DataProvider>(context).getTasks(),
+            builder: ((BuildContext context, AsyncSnapshot snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.none:
+                case ConnectionState.waiting:
+                  return new Text('loading...');
+                default:
+                  if (snapshot.hasError)
+                    return new Text('Error: ${snapshot.error}');
+                  else
+                    return _buildChild(context, snapshot);
+              }
+            })));
   }
 }
