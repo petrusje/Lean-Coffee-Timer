@@ -4,7 +4,7 @@ import 'package:lean_coffee_timer/data/database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:lean_coffee_timer/model/task_model.dart';
 
-class DataProvider with ChangeNotifier {
+class TaskDataProvider with ChangeNotifier {
   List<Task> _tasks = List<Task>();
 
   Future<List<Task>> getTasks() async {
@@ -20,17 +20,17 @@ class DataProvider with ChangeNotifier {
   }
 
   Future<void> addNewTask(Task task) async {
-    DatabaseProvider.db.insert(task);
+    DatabaseProvider.db.insertTask(task);
     updatetasks();
   }
 
   Future<List<Task>> _loadAllTasks() async {
-    final data = await DatabaseProvider.db.getAll();
+    final data = await DatabaseProvider.db.getAllTasks();
     return data;
   }
 
   Future<void> deleteTask(Task task) async {
-    DatabaseProvider.db.delete(task.id);
+    DatabaseProvider.db.deleteTask(task.id);
     updatetasks();
   }
 

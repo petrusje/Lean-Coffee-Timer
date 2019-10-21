@@ -87,7 +87,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
                       return null;
                     },
                     decoration: InputDecoration(
-                      hintText: 'Nome Timer',
+                      hintText: 'Nome do Timer',
                         counterText: _maxTitleLength.toString(),
                         filled: true,
                         hasFloatingPlaceholder: false,

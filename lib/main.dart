@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:lean_coffee_timer/data/data_provider.dart';
 import 'package:lean_coffee_timer/data/database.dart';
+import 'package:lean_coffee_timer/pages/notes_page.dart';
 import 'package:lean_coffee_timer/pages/tasks_page.dart';
 
 
@@ -31,7 +32,7 @@ class _MyAppState extends State<MyApp> {
 @override
   void initState() {
     DatabaseProvider db  = DatabaseProvider.db;
-    db.getAll();
+    db.getAllTasks();
     super.initState();
   }
 
@@ -62,19 +63,19 @@ final List<BottomNavyBarItem> naviItems = [
     BottomNavyBarItem(
       icon: Icon(Icons.home), 
       title: Text('Home'), 
-      activeColor: Colors.deepPurpleAccent[100]),
+      activeColor: Colors.deepPurpleAccent),
     BottomNavyBarItem(
       icon: Icon(Icons.access_alarm),
       title:  Text('Timer'), 
-      activeColor: Colors.pinkAccent[100]),
+      activeColor: Colors.red),
     BottomNavyBarItem(
       icon: Icon(Icons.comment),
       title:  Text('Temas'), 
-      activeColor: Colors.amber[100]),
+      activeColor: Colors.amber),
     BottomNavyBarItem(
       icon: Icon(Icons.settings),
       title:  Text('Config'),
-      activeColor: Colors.cyan[100]),
+      activeColor: Colors.cyan),
   ]; 
 
   Widget _buildChild() {
@@ -87,16 +88,16 @@ final List<BottomNavyBarItem> naviItems = [
     break;
     case 1:
       
-      return ChangeNotifierProvider<DataProvider>(
+      return ChangeNotifierProvider<TaskDataProvider>(
         builder: 
-        (context) => DataProvider(),
-        child:  Consumer<DataProvider>(
+        (context) => TaskDataProvider(),
+        child:  Consumer<TaskDataProvider>(
           builder: (context, model, child) => TaskPage(),
         ),
       );
     break; 
     case 2:
-      return Container();   
+      return NotesPage();   
     break;
     case 3:
       return Container();   

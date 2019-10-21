@@ -44,7 +44,7 @@ class _TaskPageState extends State<TaskPage> {
         });
 
     if (newTask != null) {
-      Provider.of<DataProvider>(context).addNewTask(newTask);
+      Provider.of<TaskDataProvider>(context).addNewTask(newTask);
     }
   }
 
@@ -77,7 +77,7 @@ class _TaskPageState extends State<TaskPage> {
               child: TaskWidget(task: item),
               onDismissed: (direction) {
                 tasks.remove(item);
-                Provider.of<DataProvider>(context).deleteTask(item);
+                Provider.of<TaskDataProvider>(context).deleteTask(item);
                 setState(() {});
 
                 Scaffold.of(context).showSnackBar(SnackBar(
@@ -107,12 +107,13 @@ class _TaskPageState extends State<TaskPage> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
+          tooltip: "Novo Timer",
           child: Icon(Icons.add, size: 26, color: Colors.black),
           backgroundColor: Colors.white,
           onPressed: _openBottomSheet,
         ),
         body: FutureBuilder(
-            future: Provider.of<DataProvider>(context).getTasks(),
+            future: Provider.of<TaskDataProvider>(context).getTasks(),
             builder: ((BuildContext context, AsyncSnapshot snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.none:
