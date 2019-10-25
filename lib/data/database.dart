@@ -131,7 +131,10 @@ class DatabaseProvider {
   Future<List<Note>> selectAllNotes() async {
     final Database db = await database;
     // query all the notes sorted by last edited
-    var query = await db.query("notes", orderBy: "date_created desc");
+     
+    var query = await db.query("notes",
+    columns: ["id", "content", "owner", "date_created", "note_color", "votes"],
+     orderBy: "date_created desc");
     List<Note> notes =
         query.isNotEmpty ? query.map((t) => Note.fromMap(t)).toList() : [];
     return notes;

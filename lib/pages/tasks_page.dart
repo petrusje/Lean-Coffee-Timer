@@ -71,7 +71,17 @@ class _TaskPageState extends State<TaskPage> {
           return Container(
             margin: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Dismissible(
-              background: Container(color: Colors.red),
+              background: Container(
+                alignment: AlignmentDirectional.centerEnd,
+                color: Colors.red,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 0.0),
+                  child: Icon(
+                    Icons.delete,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
               direction: DismissDirection.endToStart,
               key: ObjectKey(item),
               child: TaskWidget(task: item),
@@ -109,7 +119,7 @@ class _TaskPageState extends State<TaskPage> {
         floatingActionButton: FloatingActionButton(
           tooltip: "Novo Timer",
           child: Icon(Icons.add, size: 26, color: Colors.black),
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.white70,
           onPressed: _openBottomSheet,
         ),
         body: FutureBuilder(
@@ -118,10 +128,10 @@ class _TaskPageState extends State<TaskPage> {
               switch (snapshot.connectionState) {
                 case ConnectionState.none:
                 case ConnectionState.waiting:
-                  return new Text('loading...');
+                  return new Text('carregando...');
                 default:
                   if (snapshot.hasError)
-                    return new Text('Error: ${snapshot.error}');
+                    return new Text('Erro: ${snapshot.error}');
                   else
                     return _buildChild(context, snapshot);
               }

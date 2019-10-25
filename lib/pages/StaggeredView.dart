@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:lean_coffee_timer/data/database.dart';
@@ -16,7 +15,6 @@ class StaggeredGridPage extends StatefulWidget {
 
 class _StaggeredGridPageState extends State<StaggeredGridPage> {
   var noteDB = DatabaseProvider.db;
-  List<Map<String, dynamic>> _allNotesInQueryResult = [];
   viewType notesViewType;
 
   @override
@@ -31,27 +29,65 @@ class _StaggeredGridPageState extends State<StaggeredGridPage> {
     this.notesViewType = widget.notesViewType;
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildChild(BuildContext context, AsyncSnapshot snapshot) {
     GlobalKey _stagKey = GlobalKey();
-
-    print("update necessário?: ${CentralStation.updateNeeded}");
-    if (CentralStation.updateNeeded) {
-      retrieveAllNotesFromDatabase();
-    }
-    return Container(
-        child: Padding(
-      padding: _paddingForView(context),
-      child: new StaggeredGridView.count(
+    List<Note> notes = snapshot.data;
+    if ( snapshot.data == null || notes.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text('Sem sugestões de Tema',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            Text('Adicione um novo Tema e ele \nSerá exibido aqui.',
+                textAlign: TextAlign.center)
+          ],
+        ),
+      );
+    } else
+    {
+        return StaggeredGridView.count(
         key: _stagKey,
         crossAxisSpacing: 6,
         mainAxisSpacing: 6,
         crossAxisCount: _colForStaggeredView(context),
-        children: List.generate(_allNotesInQueryResult.length, (i) {
-          return _tileGenerator(i);
-        }),
-        staggeredTiles: _tilesForView(),
-      ),
+        children: getTiles(notes), 
+        staggeredTiles: _tilesForView(notes.length),
+      );
+    }
+  }
+
+ List<Widget> getTiles(List<Note> notes) 
+  {
+    List<Widget> tiles = new List<Widget>();
+    for(int i=0; i < notes.length;i++)
+      tiles.add(MyStaggeredTile(notes[i]));
+    return tiles;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print("update necessário?: ${CentralStation.updateNeeded}");
+    if (CentralStation.updateNeeded) {
+      changeState();
+    }
+    return Container(
+        child: Padding(
+      padding: _paddingForView(context),
+      child: FutureBuilder(
+          future: noteDB.selectAllNotes(),
+          builder: ((BuildContext context, AsyncSnapshot snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+              case ConnectionState.waiting:
+                return new Text('carregando...');
+              default:
+                if (snapshot.hasError)
+                  return new Text('Erro: ${snapshot.error}');
+                else
+                  return _buildChild(context, snapshot);
+            }
+          })),
     ));
   }
 
@@ -61,9 +97,9 @@ class _StaggeredGridPageState extends State<StaggeredGridPage> {
     return MediaQuery.of(context).size.width > 600 ? 3 : 2;
   }
 
-  List<StaggeredTile> _tilesForView() {
+  List<StaggeredTile> _tilesForView(int length) {
     // Generate staggered tiles for the view based on the current preference.
-    return List.generate(_allNotesInQueryResult.length, (index) {
+    return List.generate(length, (index) {
       return StaggeredTile.fit(1);
     });
   }
@@ -81,31 +117,11 @@ class _StaggeredGridPageState extends State<StaggeredGridPage> {
         left: padding, right: padding, top: top_bottom, bottom: top_bottom);
   }
 
-  MyStaggeredTile _tileGenerator(int i) {
-    return MyStaggeredTile(
-      Note(
-          _allNotesInQueryResult[i]["id"],
-          _allNotesInQueryResult[i]["owner"] == null
-              ? ""
-              : utf8.decode(_allNotesInQueryResult[i]["owner"]),
-          _allNotesInQueryResult[i]["content"] == null
-              ? ""
-              : utf8.decode(_allNotesInQueryResult[i]["content"]),
-          DateTime.fromMillisecondsSinceEpoch(
-              _allNotesInQueryResult[i]["date_created"] * 1000),
-          Color(_allNotesInQueryResult[i]["note_color"]),
-          _allNotesInQueryResult[i]["votes"]),
-    );
-  }
-
-  void retrieveAllNotesFromDatabase() {
+  void changeState() {
     // queries for all the notes from the database ordered by latest edited note. excludes archived notes.
-    var _testData = noteDB.selectAllNotesMap();
-    _testData.then((value) {
-      setState(() {
-        this._allNotesInQueryResult = value;
-        CentralStation.updateNeeded = false;
-      });
+
+    setState(() {
+      CentralStation.updateNeeded = false;
     });
   }
 }

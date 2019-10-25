@@ -16,15 +16,19 @@ dependencies:
   path_provider: any
   flutter_launcher_icons: ^0.7.0
   provider: ^2.0.0
+  global_configuration: ^1.4.0
   audioplayers: ^0.13.2
   uuid: 2.0.1
   equatable: ^0.2.3
   meta: ^1.1.6
-  intl: ^0.15.7
+  intl: ^0.16.0 
+  flutter_form_builder: ^3.5.5
   flutter_staggered_grid_view: ^0.3.0
   auto_size_text: ^1.1.2
   share: ^0.6.1
-  
+  barcode_scan: ^0.0.4
+  qr_flutter: ^1.1.1
+
 
 dev_dependencies:
   flutter_test:
@@ -46,6 +50,10 @@ flutter:
   assets:
     - images/logo.png
     - images/Icon.png
+    - assets/cfg/
+    - assets/analogwatch.mp3
+    - assets/oldschoolbell.mp3
+    - assets/smokealarm.mp3
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

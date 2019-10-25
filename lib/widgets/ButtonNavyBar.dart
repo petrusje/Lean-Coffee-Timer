@@ -41,7 +41,7 @@ class BottomNavyBar extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         children: <Widget>[
           Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Padding(

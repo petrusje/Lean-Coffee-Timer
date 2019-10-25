@@ -16,8 +16,8 @@ class Note {
   Map<String, dynamic> toMap(bool forUpdate) {
     var data = {
       'id': utf8.encode(id),  //since id is auto incremented in the database we don't need to send it to the insert query.
-      'owner': utf8.encode(owner),
       'content': utf8.encode( content ),
+      'owner': utf8.encode(owner),
       'date_created': epochFromDate( date_created ),
       'note_color': note_color.value,
       'votes': votes  //  for later use for integrating archiving
@@ -37,15 +37,16 @@ int epochFromDate(DateTime dt) {
     return dt.millisecondsSinceEpoch ~/ 1000 ;
 }
 
-  factory Note.fromMap(Map<String, dynamic> json) =>  
-  Note(
+  factory Note.fromMap(Map<String, dynamic> json) {
+    return Note(
       json['id'],
-      json['content'],
-      json['owner'],
+      utf8.decode(json['content']),
+      utf8.decode(json['owner']),
       DateTime.fromMicrosecondsSinceEpoch(json['date_created']),
       Color(json['note_color']),
       json['votes']
   );
+  }
 
 // overriding toString() of the note class to print a better debug description of this custom class
 @override toString() {

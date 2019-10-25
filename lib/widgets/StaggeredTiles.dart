@@ -20,7 +20,7 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
   @override
   Widget build(BuildContext context) {
     _content = widget.note.content;
-    _fontSize = 12.0; //_determineFontSizeForContent();
+    _fontSize = 8.0; //_determineFontSizeForContent();
     tileColor = widget.note.note_color;
     title = "Votos:${widget.note.votes}";
 

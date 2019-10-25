@@ -45,7 +45,7 @@ class _NotesPageState extends State<NotesPage> {
       floatingActionButton: FloatingActionButton(
           tooltip: "Novo Tema",
           child: Icon(Icons.add, size: 26, color: Colors.black),
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.white70,
           onPressed: () => _newNoteTapped(context),
         ),
     );

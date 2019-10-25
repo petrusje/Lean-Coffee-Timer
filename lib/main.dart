@@ -1,8 +1,10 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:global_configuration/global_configuration.dart';
 import 'package:lean_coffee_timer/data/data_provider.dart';
 import 'package:lean_coffee_timer/data/database.dart';
+import 'package:lean_coffee_timer/pages/config_page.dart';
 import 'package:lean_coffee_timer/pages/notes_page.dart';
 import 'package:lean_coffee_timer/pages/tasks_page.dart';
 
@@ -11,8 +13,10 @@ import 'package:provider/provider.dart';
 import 'package:lean_coffee_timer/widgets/ButtonNavyBar.dart';
 
 
-void main()
+void main() async 
 { 
+  WidgetsFlutterBinding.ensureInitialized();
+  await GlobalConfiguration().loadFromAsset("app_settings");
   runApp(MyApp());
 }
 
@@ -39,6 +43,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
       return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Lean Coffee',
       theme: ThemeData(
         primarySwatch: Colors.indigo,
@@ -100,7 +105,7 @@ final List<BottomNavyBarItem> naviItems = [
       return NotesPage();   
     break;
     case 3:
-      return Container();   
+      return ConfigPage();   
     break;
   }
   return Container();
